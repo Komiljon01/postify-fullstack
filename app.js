@@ -1,17 +1,19 @@
 require("dotenv").config();
+const PORT = process.env.PORT || 8080;
 
 const express = require("express");
 const mongoose = require("mongoose");
-const fileUpload = require("express-fileupload");
 const app = express();
-const postRoute = require("./routes/post.route");
+const fileUpload = require("express-fileupload");
 
 app.use(express.json());
 app.use(fileUpload());
 app.use(express.static("static"));
-app.use("/api/post", postRoute);
 
-const PORT = process.env.PORT || 8080;
+// Routes
+app.use("/api/post", require("./routes/post.route"));
+app.use("/api/auth", require("./routes/auth.route"));
+
 
 const bootstrap = async () => {
   try {
