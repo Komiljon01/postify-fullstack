@@ -5,15 +5,16 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const fileUpload = require("express-fileupload");
+const cookieParser = require("cookie-parser");
 
 app.use(express.json());
+app.use(cookieParser({}));
 app.use(fileUpload());
 app.use(express.static("static"));
 
 // Routes
 app.use("/api/post", require("./routes/post.route"));
 app.use("/api/auth", require("./routes/auth.route"));
-
 
 const bootstrap = async () => {
   try {
