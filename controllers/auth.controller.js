@@ -18,7 +18,7 @@ class AuthController {
   async activation(req, res) {
     const userID = req.params.id;
     await authService.activation(userID);
-    res.status(200).json({ message: "User is activated!" });
+    res.redirect("https://github.com/Komiljon01/");
   }
 }
 
