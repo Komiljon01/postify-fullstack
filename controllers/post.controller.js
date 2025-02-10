@@ -12,7 +12,11 @@ class PostController {
 
   async create(req, res, next) {
     try {
-      const newPost = await postService.create(req.body, req.files.picture);
+      const newPost = await postService.create(
+        req.body,
+        req.files.picture,
+        req.user.id
+      );
       res.status(201).json(newPost);
     } catch (error) {
       next(error);
