@@ -6,7 +6,10 @@ const mongoose = require("mongoose");
 const app = express();
 const fileUpload = require("express-fileupload");
 const cookieParser = require("cookie-parser");
+const errorMiddleware = require("./middlewares/error.middleware");
+const cors = require("cors");
 
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser({}));
 app.use(fileUpload());
@@ -15,6 +18,9 @@ app.use(express.static("static"));
 // Routes
 app.use("/api/post", require("./routes/post.route"));
 app.use("/api/auth", require("./routes/auth.route"));
+
+// Middlewares
+app.use(errorMiddleware);
 
 const bootstrap = async () => {
   try {
