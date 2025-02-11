@@ -5,7 +5,7 @@ const authorMiddleware = require("../middlewares/author.middleware");
 const router = express.Router();
 
 router.get("/get", PostController.getAll);
-router.post("/create", authMiddleware, PostController.create);
+router.post("/create", PostController.create);
 router.delete(
   "/delete/:id",
   authMiddleware,
