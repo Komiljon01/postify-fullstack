@@ -23,11 +23,11 @@ function Home() {
 
   return (
     <>
-      <div className="container max-w-[1200px] mx-auto mt-36 mb-16">
+      <div className="container max-w-[1200px] mx-auto mt-36 mb-16 px-5">
         {/* Error */}
         {error && <ErrorContent message={error.message} />}
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {/* Loading */}
           {isLoading &&
             Array.from({ length: 6 }).map((_, idx) => (
