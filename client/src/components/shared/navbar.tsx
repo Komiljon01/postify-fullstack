@@ -1,12 +1,23 @@
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { FaPencil } from "react-icons/fa6";
-import { FiRss } from "react-icons/fi";
+// import { FiRss } from "react-icons/fi";
 import CreatePost from "../create-post";
 import { useCreatePost } from "@/hooks/use-create-post";
+import { authStore } from "@/store/auth.store";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 function Navbar() {
+  const { isAuth, user } = authStore();
   const { onOpen } = useCreatePost();
+
   return (
     <>
       <div className="w-full h-24 bg-gray-900 fixed inset-0">
@@ -28,11 +39,31 @@ function Navbar() {
             >
               Create Post
             </Button>
-            <Link to={"/auth"}>
-              <Button size={"lg"} className="rounded-full font-bold">
-                Login
-              </Button>
-            </Link>
+
+            {isAuth ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <img
+                    src={`https://api.dicebear.com/9.x/initials/svg?seed=${
+                      user.email.split("")[0]
+                    }`}
+                    alt={`user profile`}
+                    className="w-8 h-8 rounded-full"
+                  />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Log out</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to={"/auth"}>
+                <Button size={"lg"} className="rounded-full font-bold">
+                  Login
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </div>
