@@ -25,11 +25,13 @@ import { Label } from "./ui/label";
 import { ChangeEvent, useState } from "react";
 import $axios from "@/http";
 import { toast } from "sonner";
+import { postStore } from "@/store/post.store";
 
 function CreatePost() {
   const { isOpen, onClose } = useCreatePost();
   const [isLoading, setIsLoading] = useState(false);
   const [picture, setPicture] = useState<File | null>(null);
+  const { posts, setPosts } = postStore();
 
   const form = useForm<z.infer<typeof postSchema>>({
     resolver: zodResolver(postSchema),
@@ -54,6 +56,8 @@ function CreatePost() {
       .post("/post/create", formData)
       .then((res) => {
         console.log(res);
+        const newData = [...posts, res.data];
+        setPosts(newData);
         form.reset();
         onClose();
       })
