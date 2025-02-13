@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { FaPencil } from "react-icons/fa6";
 // import { FiRss } from "react-icons/fi";
@@ -13,10 +13,28 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import $axios from "@/http";
+import { IUser } from "@/types";
 
 function Navbar() {
-  const { isAuth, user } = authStore();
+  const { isAuth, user, isLoading, setIsAuth, setUser } = authStore();
   const { onOpen } = useCreatePost();
+  const navigate = useNavigate();
+
+  const logOut = async () => {
+    try {
+      await $axios.post("/auth/logout");
+      localStorage.removeItem("accessToken");
+      setIsAuth(false);
+      setUser({} as IUser);
+      navigate("/auth");
+    } catch (error) {
+      // @ts-ignore
+      toast.error(error.response.data.message);
+    }
+  };
 
   return (
     <>
@@ -30,39 +48,52 @@ function Navbar() {
             <FaPencil className="text-xl text-green-400" />
             {/* <FiRss className="text-3xl text-green-400" /> */}
           </Link>
-          <div className="flex gap-2">
-            <Button
-              className="rounded-full font-bold"
-              size={"lg"}
-              variant={"outline"}
-              onClick={onOpen}
-            >
-              Create Post
-            </Button>
+          <div className="flex gap-2 items-center">
+            {isAuth && (
+              <Button
+                className="rounded-full font-bold"
+                size={"lg"}
+                variant={"outline"}
+                onClick={onOpen}
+              >
+                Create Post
+              </Button>
+            )}
 
-            {isAuth ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <img
-                    src={`https://api.dicebear.com/9.x/initials/svg?seed=${
-                      user.email.split("")[0]
-                    }`}
-                    alt={`user profile`}
-                    className="w-8 h-8 rounded-full"
-                  />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem>Log out</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+            {isLoading ? (
+              <Loader2 className="animate-spin" />
             ) : (
-              <Link to={"/auth"}>
-                <Button size={"lg"} className="rounded-full font-bold">
-                  Login
-                </Button>
-              </Link>
+              <>
+                {isAuth ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <img
+                        src={`https://api.dicebear.com/9.x/initials/svg?seed=${
+                          user.email.split("")[0]
+                        }`}
+                        alt={`user profile`}
+                        className="w-8 h-8 rounded-full"
+                      />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={logOut}
+                        className="cursor-pointer"
+                      >
+                        Log out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  <Link to={"/auth"}>
+                    <Button size={"lg"} className="rounded-full font-bold">
+                      Login
+                    </Button>
+                  </Link>
+                )}
+              </>
             )}
           </div>
         </div>

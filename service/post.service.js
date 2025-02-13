@@ -7,21 +7,12 @@ class PostService {
     return allPosts;
   }
 
-  /* async create(post, picture, author) {
+  async create(post, picture, author) {
     const filePicture = fileService.save(picture);
     const newPost = await postModel.create({
       ...post,
       picture: filePicture,
       author,
-    });
-    return newPost;
-  } */
-
-  async create(post, picture) {
-    const filePicture = fileService.save(picture);
-    const newPost = await postModel.create({
-      ...post,
-      picture: filePicture,
     });
     return newPost;
   }

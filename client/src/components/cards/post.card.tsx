@@ -1,6 +1,6 @@
 import { IPost } from "@/types";
 import { Card, CardContent, CardFooter, CardTitle } from "../ui/card";
-import $axios, { API_URL } from "@/http";
+import { API_URL } from "@/http";
 import { Button } from "../ui/button";
 import { useConfirm } from "@/hooks/use-confirm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
@@ -24,6 +24,7 @@ import { postStore } from "@/store/post.store";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import FillLoading from "../shared/fill-loading";
+import $api from "@/http/api";
 
 function PostCard({ post }: { post: IPost }) {
   const { onOpen, setPost } = useConfirm();
@@ -43,7 +44,7 @@ function PostCard({ post }: { post: IPost }) {
   const { mutate, isPending, reset } = useMutation({
     mutationKey: ["edit-post"],
     mutationFn: async (values: z.infer<typeof postSchema>) => {
-      const { data } = await $axios.put(`/post/edit/${post._id}`, values);
+      const { data } = await $api.put(`/post/edit/${post._id}`, values);
       return data;
     },
     onSuccess: (data) => {
@@ -52,7 +53,10 @@ function PostCard({ post }: { post: IPost }) {
       setOpen(false);
       reset();
     },
-    onError: (error) => toast.error(error.message),
+    onError: (error) => {
+      // @ts-ignore
+      toast.error(error.response.data.message);
+    },
   });
 
   function onSubmit(values: z.infer<typeof postSchema>) {

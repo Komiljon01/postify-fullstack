@@ -23,9 +23,9 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
 import { ChangeEvent, useState } from "react";
-import $axios from "@/http";
 import { toast } from "sonner";
 import { postStore } from "@/store/post.store";
+import $api from "@/http/api";
 
 function CreatePost() {
   const { isOpen, onClose } = useCreatePost();
@@ -43,7 +43,7 @@ function CreatePost() {
     setPicture(file as File);
   };
 
-  function onSubmit(values: z.infer<typeof postSchema>) {
+  async function onSubmit(values: z.infer<typeof postSchema>) {
     if (!picture) return null;
     setIsLoading(true);
 
@@ -52,22 +52,20 @@ function CreatePost() {
     formData.append("body", values.body);
     formData.append("picture", picture);
 
-    const promise = $axios
-      .post("/post/create", formData)
-      .then((res) => {
-        console.log(res);
-        const newData = [...posts, res.data];
-        setPosts(newData);
-        form.reset();
-        onClose();
-      })
-      .finally(() => setIsLoading(false));
-
-    toast.promise(promise, {
-      loading: "Loading...",
-      error: "Something went wrong!",
-      success: "Successfully created post!",
-    });
+    try {
+      const res = await $api.post("/post/create", formData);
+      console.log(res);
+      const newData = [...posts, res.data];
+      setPosts(newData);
+      form.reset();
+      onClose();
+      toast.success("Successfully created post");
+    } catch (error) {
+      // @ts-ignore
+      toast.error(error.response.data.message);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (

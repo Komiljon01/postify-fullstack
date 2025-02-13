@@ -9,10 +9,11 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import { useMutation } from "@tanstack/react-query";
-import $axios from "@/http";
 import { postStore } from "@/store/post.store";
 import FillLoading from "../shared/fill-loading";
 import ErrorContent from "../shared/error-content";
+import $api from "@/http/api";
+import { toast } from "sonner";
 
 function ConfirmModal() {
   const { isOpen, onClose, post } = useConfirm();
@@ -21,7 +22,7 @@ function ConfirmModal() {
   const { mutate, error, isPending, reset } = useMutation({
     mutationKey: ["delete-post"],
     mutationFn: async () => {
-      const { data } = await $axios.delete(`/post/delete/${post._id}`);
+      const { data } = await $api.delete(`/post/delete/${post._id}`);
       return data;
     },
     onSuccess: (data) => {
@@ -29,6 +30,10 @@ function ConfirmModal() {
       setPosts(newData);
       onClose();
       reset();
+    },
+    onError: (error) => {
+      // @ts-ignore
+      toast.error(error.response.data.message);
     },
   });
 
@@ -40,8 +45,8 @@ function ConfirmModal() {
   return (
     <Dialog open={isOpen} onOpenChange={onCloseDialog}>
       <DialogContent>
-        {error && <ErrorContent message={error.message} />}
-
+        {/* @ts-ignore */}
+        {error && <ErrorContent message={error.response.data.message} />}
         {isPending && <FillLoading />}
         <DialogHeader>
           <DialogTitle>Are you absolutely sure?</DialogTitle>
