@@ -52,6 +52,7 @@ function PostCard({ post }: { post: IPost }) {
       setPosts(newData);
       setOpen(false);
       reset();
+      toast.success("Successfully edited post");
     },
     onError: (error) => {
       // @ts-ignore

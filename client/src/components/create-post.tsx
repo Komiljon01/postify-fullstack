@@ -54,7 +54,6 @@ function CreatePost() {
 
     try {
       const res = await $api.post("/post/create", formData);
-      console.log(res);
       const newData = [...posts, res.data];
       setPosts(newData);
       form.reset();
@@ -70,7 +69,7 @@ function CreatePost() {
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent>
+      <SheetContent className="max-w-full w-full">
         <SheetHeader>
           <SheetTitle>Create a post</SheetTitle>
           <SheetDescription>Write what is in your mind</SheetDescription>

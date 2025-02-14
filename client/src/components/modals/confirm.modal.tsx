@@ -30,6 +30,7 @@ function ConfirmModal() {
       setPosts(newData);
       onClose();
       reset();
+      toast.success("Successfully deleted post");
     },
     onError: (error) => {
       // @ts-ignore

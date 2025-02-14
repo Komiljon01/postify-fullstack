@@ -14,4 +14,4 @@ export interface IUser {
   id: string;
 }
 
-export type AuthType = "login" | "register";
+export type AuthType = "login" | "register" | "forgot-password";

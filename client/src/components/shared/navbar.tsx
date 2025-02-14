@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { FaPencil } from "react-icons/fa6";
-// import { FiRss } from "react-icons/fi";
 import CreatePost from "../create-post";
 import { useCreatePost } from "@/hooks/use-create-post";
 import { authStore } from "@/store/auth.store";
@@ -13,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Loader2 } from "lucide-react";
+import { Loader2, LogOut, Mail, PencilLine } from "lucide-react";
 import { toast } from "sonner";
 import $axios from "@/http";
 import { IUser } from "@/types";
@@ -30,6 +29,7 @@ function Navbar() {
       setIsAuth(false);
       setUser({} as IUser);
       navigate("/auth");
+      toast.success("Successfully log out");
     } catch (error) {
       // @ts-ignore
       toast.error(error.response.data.message);
@@ -44,14 +44,15 @@ function Navbar() {
             className="flex items-center justify-center gap-2 ml-2"
             to={"/"}
           >
-            <p className="font-bold text-4xl text-white font-mono">Postify</p>
-            <FaPencil className="text-xl text-green-400" />
-            {/* <FiRss className="text-3xl text-green-400" /> */}
+            <p className="font-bold text-3xl sm:text-4xl text-white font-mono">
+              Postify
+            </p>
+            <FaPencil className="text-lg sm:text-xl text-green-400" />
           </Link>
           <div className="flex gap-2 items-center">
             {isAuth && (
               <Button
-                className="rounded-full font-bold"
+                className="rounded-full font-bold hidden sm:flex"
                 size={"lg"}
                 variant={"outline"}
                 onClick={onOpen}
@@ -75,14 +76,26 @@ function Navbar() {
                         className="w-8 h-8 rounded-full"
                       />
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
+                    <DropdownMenuContent className="">
+                      <DropdownMenuLabel className="flex items-center gap-1">
+                        <Mail className="w-4 h-4" /> {user.email}
+                      </DropdownMenuLabel>
                       <DropdownMenuSeparator />
+
+                      {isAuth && (
+                        <DropdownMenuItem
+                          onClick={onOpen}
+                          className="cursor-pointer flex sm:hidden"
+                        >
+                          <PencilLine /> Create post
+                        </DropdownMenuItem>
+                      )}
+
                       <DropdownMenuItem
                         onClick={logOut}
                         className="cursor-pointer"
                       >
-                        Log out
+                        <LogOut /> Log out
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

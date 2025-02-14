@@ -10,7 +10,7 @@ import ErrorContent from "@/components/shared/error-content";
 function Home() {
   const { setPosts, posts } = postStore();
 
-  const { data, isLoading, error } = useQuery({
+  const { isLoading, error } = useQuery({
     queryKey: ["get-posts"],
     queryFn: async () => {
       const { data } = await $axios("/post/get");
@@ -18,8 +18,6 @@ function Home() {
       return data;
     },
   });
-
-  console.log(data);
 
   return (
     <>

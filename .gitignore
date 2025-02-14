@@ -1,2 +1,6 @@
+# Folders
 /node_modules
+/static
+
+# env
 .env
